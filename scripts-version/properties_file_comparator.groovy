@@ -12,15 +12,23 @@ compareProperties(propertiesFile1.clone(), propertiesFile2.clone())
 
 def compareProperties(properties1, properties2) {
     if (properties1.isEmpty()) {
+        def removes = []
         for (entry2 in properties2) {
-            def prop2 = new Property(key: entry2.key, value: properties2.remove(entry2.key))
+            def prop2 = new Property(key: entry2.key, value: entry2.key)
+            removes << entry2.key
             printDifference(new Property(), prop2)
         }
+
+        removes.each { k -> properties2.remove(k) }
     } else if (properties2.isEmpty()) {
+        def removes = []
         for (entry1 in properties1) {
-            def prop1 = new Property(key: entry1.key, value: properties1.remove(entry1.key))
+            def prop1 = new Property(key: entry1.key, value: properties1[entry1.key])
+            removes << entry1.key
             printDifference(prop1, new Property())
         }
+
+        removes.each { k -> properties1.remove(k) }
     } else {
         def key1 = properties1.firstKey()
         def key2 = properties2.firstKey()
